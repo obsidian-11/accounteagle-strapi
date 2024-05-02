@@ -788,6 +788,170 @@ export interface PluginI18NLocale extends Schema.CollectionType {
   };
 }
 
+export interface ApiClientClient extends Schema.CollectionType {
+  collectionName: 'clients';
+  info: {
+    singularName: 'client';
+    pluralName: 'clients';
+    displayName: 'Client';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Name: Attribute.String & Attribute.Required;
+    Phone: Attribute.String & Attribute.Required & Attribute.Unique;
+    Email: Attribute.Email & Attribute.Unique;
+    CurrentBalace: Attribute.BigInteger;
+    trades: Attribute.Relation<
+      'api::client.client',
+      'oneToMany',
+      'api::trade.trade'
+    >;
+    payments: Attribute.Relation<
+      'api::client.client',
+      'oneToMany',
+      'api::payment.payment'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::client.client',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::client.client',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiGstAccountGstAccount extends Schema.CollectionType {
+  collectionName: 'gst_accounts';
+  info: {
+    singularName: 'gst-account';
+    pluralName: 'gst-accounts';
+    displayName: 'GstAccount';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    GSTIN: Attribute.String &
+      Attribute.Unique &
+      Attribute.SetMinMaxLength<{
+        maxLength: 15;
+      }>;
+    Username: Attribute.String & Attribute.Required & Attribute.Unique;
+    Password: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::gst-account.gst-account',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::gst-account.gst-account',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPaymentPayment extends Schema.CollectionType {
+  collectionName: 'payments';
+  info: {
+    singularName: 'payment';
+    pluralName: 'payments';
+    displayName: 'Payment';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Amount: Attribute.BigInteger & Attribute.Required;
+    Status: Attribute.String &
+      Attribute.Required &
+      Attribute.DefaultTo<'UNPAID'>;
+    Invoice: Attribute.JSON;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTradeTrade extends Schema.CollectionType {
+  collectionName: 'trades';
+  info: {
+    singularName: 'trade';
+    pluralName: 'trades';
+    displayName: 'Trade';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    TradeName: Attribute.String & Attribute.Required;
+    Address: Attribute.Text;
+    Category: Attribute.Enumeration<
+      ['Retail', 'Service', 'Wholesale', 'Transport', 'Import/Export', 'Other']
+    > &
+      Attribute.Required;
+    MonthlyRevenue: Attribute.Enumeration<
+      [
+        'INR 0 - 1,00,000',
+        'INR 1,00,000 - 3,00,000',
+        'INR 3,00,000 - 6,00,000',
+        'INR 6,00,000 - 10,00,000',
+        'INR 10,00,000+'
+      ]
+    >;
+    gst_account: Attribute.Relation<
+      'api::trade.trade',
+      'oneToOne',
+      'api::gst-account.gst-account'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::trade.trade',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::trade.trade',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -806,6 +970,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
+      'api::client.client': ApiClientClient;
+      'api::gst-account.gst-account': ApiGstAccountGstAccount;
+      'api::payment.payment': ApiPaymentPayment;
+      'api::trade.trade': ApiTradeTrade;
     }
   }
 }

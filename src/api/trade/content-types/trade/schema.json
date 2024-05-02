@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "trades",
+  "info": {
+    "singularName": "trade",
+    "pluralName": "trades",
+    "displayName": "Trade",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "TradeName": {
+      "type": "string",
+      "required": true
+    },
+    "Address": {
+      "type": "text"
+    },
+    "Category": {
+      "type": "enumeration",
+      "enum": [
+        "Retail",
+        "Service",
+        "Wholesale",
+        "Transport",
+        "Import/Export",
+        "Other"
+      ],
+      "required": true
+    },
+    "MonthlyRevenue": {
+      "type": "enumeration",
+      "enum": [
+        "INR 0 - 1,00,000",
+        "INR 1,00,000 - 3,00,000",
+        "INR 3,00,000 - 6,00,000",
+        "INR 6,00,000 - 10,00,000",
+        "INR 10,00,000+"
+      ]
+    },
+    "gst_account": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::gst-account.gst-account"
+    }
+  }
+}
